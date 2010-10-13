@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="IntegrationTestingExample">
+</Property><Property Name="Solution File" Value="C:\Users\greg\Projects\MvcIntegrationTestFramework\IntegrationTestingExample.sln">
+</Property><Property Name="Date" Value="Tuesday, October 12, 2010">
+</Property><Property Name="Time" Value="21:23 PM">
+</Property></Properties><Event ErrorLevel="0" Project="MyMvcApplication" Source="MyMvcApplication\MyMvcApplication.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="MyMvcApplication" Source="MyMvcApplication\MyMvcApplication.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="MyMvcApplication.Tests" Source="MyMvcApplication.Tests\MyMvcApplication.Tests.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="MyMvcApplication.Tests" Source="MyMvcApplication.Tests\MyMvcApplication.Tests.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="MvcIntegrationTestFramework" Source="MvcIntegrationTestFramework\MvcIntegrationTestFramework.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="MvcIntegrationTestFramework" Source="MvcIntegrationTestFramework\MvcIntegrationTestFramework.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="IntegrationTestingExample.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="IntegrationTestingExample.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="MyMvcApplication" Source="MyMvcApplication\MyMvcApplication.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="MyMvcApplication.Tests" Source="MyMvcApplication.Tests\MyMvcApplication.Tests.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="MvcIntegrationTestFramework" Source="MvcIntegrationTestFramework\MvcIntegrationTestFramework.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event></UpgradeLog>

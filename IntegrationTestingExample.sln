@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyMvcApplication", "MyMvcApplication\MyMvcApplication.csproj", "{DA471BE6-C786-4D16-A390-3111F9E86B66}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyMvcApplication.Tests", "MyMvcApplication.Tests\MyMvcApplication.Tests.csproj", "{337FEBC1-F001-444B-BF72-A4380F5EA658}"
