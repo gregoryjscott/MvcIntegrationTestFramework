@@ -1,0 +1,1 @@
+First commit came straight from the demo download at Steve Sanderson http://blog.stevensanderson.com/2009/06/11/integration-testing-your-aspnet-mvc-application/.  I then borrowed some ideas from the Chris Ortman version (http://github.com/chrisortman/MvcIntegrationTest), but kept the same API feel as the original framework.
