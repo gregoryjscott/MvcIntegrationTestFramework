@@ -18,17 +18,43 @@ namespace MvcIntegrationTestFramework.Browsing
             Cookies = new HttpCookieCollection();
         }
 
-        public RequestResult ProcessRequest(string url)
+        public RequestResult Get(string url)
         {
-            return ProcessRequest(url, HttpVerbs.Get, null);
+            return ProcessRequest(url, HttpVerbs.Get, new NameValueCollection());
         }
 
-        public RequestResult ProcessRequest(string url, HttpVerbs httpVerb, NameValueCollection formValues)
+        /// <summary>
+        /// Sends a post to your url. Url should NOT start with a /
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="formData"></param>
+        /// <example>
+        /// <code>
+        /// var result = Post("registration/create", new
+        /// {
+        ///     Form = new
+        ///     {
+        ///         InvoiceNumber = "10000",
+        ///         AmountDue = "10.00",
+        ///         Email = "chriso@innovsys.com",
+        ///         Password = "welcome",
+        ///         ConfirmPassword = "welcome"
+        ///     }
+        /// });
+        /// </code>
+        /// </example>
+        public RequestResult Post(string url, object formData)
+        {
+            var formNameValueCollection = NameValueCollectionConversions.ConvertFromObject(formData);
+            return ProcessRequest(url, HttpVerbs.Post, formNameValueCollection);
+        }
+
+        private RequestResult ProcessRequest(string url, HttpVerbs httpVerb = HttpVerbs.Get, NameValueCollection formValues = null)
         {
             return ProcessRequest(url, httpVerb, formValues, null);
         }
 
-        public RequestResult ProcessRequest(string url, HttpVerbs httpVerb, NameValueCollection formValues, NameValueCollection headers)
+        private RequestResult ProcessRequest(string url, HttpVerbs httpVerb, NameValueCollection formValues, NameValueCollection headers)
         {
             if (url == null) throw new ArgumentNullException("url");
 

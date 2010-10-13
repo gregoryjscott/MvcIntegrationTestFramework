@@ -16,33 +16,29 @@ namespace MvcIntegrationTestFramework.Hosting
     /// </summary>
     public class AppHost
     {
-        private readonly AppDomainProxy appDomainProxy; // The gateway to the ASP.NET-enabled .NET appdomain
+        private readonly AppDomainProxy _appDomainProxy; // The gateway to the ASP.NET-enabled .NET appdomain
 
-        public AppHost(string appPhysicalDirectory) : this(appPhysicalDirectory, "/")
-        {
-        }
-
-        public AppHost(string appPhysicalDirectory, string virtualDirectory)
+        private AppHost(string appPhysicalDirectory, string virtualDirectory = "/")
         {
             try {
-                appDomainProxy = (AppDomainProxy) ApplicationHost.CreateApplicationHost(typeof (AppDomainProxy), virtualDirectory, appPhysicalDirectory);
+                _appDomainProxy = (AppDomainProxy) ApplicationHost.CreateApplicationHost(typeof (AppDomainProxy), virtualDirectory, appPhysicalDirectory);
             } catch(FileNotFoundException ex) {
                 if((ex.Message != null) && ex.Message.Contains("MvcIntegrationTestFramework"))
                     throw new InvalidOperationException("Could not load MvcIntegrationTestFramework.dll within a bin directory under " + appPhysicalDirectory + ". Is this the path to your ASP.NET MVC application, and have you set up a post-build event to copy your test assemblies and their dependencies to this folder? See the demo project for an example.");
                 throw;
             }
 
-            appDomainProxy.RunCodeInAppDomain(() => {
+            _appDomainProxy.RunCodeInAppDomain(() => {
                 InitializeApplication();
                 AttachTestControllerDescriptorsForAllControllers();
                 LastRequestData.Reset();
             });
         }
 
-        public void SimulateBrowsingSession(Action<BrowsingSession> testScript)
+        public void BrowsingSession(Action<BrowsingSession> testScript)
         {
             var serializableDelegate = new SerializableDelegate<Action<BrowsingSession>>(testScript);
-            appDomainProxy.RunBrowsingSessionInAppDomain(serializableDelegate);
+            _appDomainProxy.RunBrowsingSessionInAppDomain(serializableDelegate);
         }
 
         #region Initializing app & interceptors
@@ -107,5 +103,43 @@ namespace MvcIntegrationTestFramework.Hosting
         }
 
         #endregion
+
+        /// <summary>
+        /// Creates an instance of the AppHost so it can be used to simulate a browsing session.
+        /// </summary>
+        /// <param name="pathToYourWebProject">
+        /// The path to your web project. This is optional if you don't
+        /// specify we try to guess that it is in the first directory like
+        /// ../../../*/web.config
+        /// </param>
+        /// <returns></returns>
+        public static AppHost Simulate(string pathToYourWebProject = null)
+        {
+            if (pathToYourWebProject == null)
+            {
+                var guessDirectory = new DirectoryInfo(
+                                        Path.GetFullPath(
+                                            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..")));
+
+                var projectDirs = guessDirectory.GetDirectories();
+                foreach (var pd in projectDirs)
+                {
+                    if (pd.GetFiles("web.config").Length == 1)
+                    {
+                        pathToYourWebProject = pd.FullName;
+                        continue;
+                    }
+                }
+            }
+
+            var ourDll = Path.Combine(pathToYourWebProject, "bin", "MvcIntegrationTestFramework.dll");
+            if (!File.Exists(ourDll))
+            {
+                File.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MvcIntegrationTestFramework.dll"), ourDll);
+            }
+
+            //return new AppHost(pathToYourWebProject, "/__test");
+            return new AppHost(pathToYourWebProject);
+        }
     }
 }

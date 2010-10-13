@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Specialized;
-using System.IO;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using MvcIntegrationTestFramework.Browsing;
 using MvcIntegrationTestFramework.Hosting;
 using NUnit.Framework;
@@ -11,15 +8,12 @@ namespace MyMvcApplication.Tests
     [TestFixture]
     public class HomeControllerTests
     {
-        private static readonly string mvcAppPath = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory + "\\..\\..\\..\\MyMvcApplication");
-        private readonly AppHost appHost = new AppHost(mvcAppPath);
-
         [Test]
         public void Root_Url_Renders_Index_View()
         {
-            appHost.SimulateBrowsingSession(browsingSession => {
+            AppHost.Simulate().BrowsingSession(browsingSession => {
                 // Request the root URL
-                RequestResult result = browsingSession.ProcessRequest("");
+                RequestResult result = browsingSession.Get("");
 
                 // Can make assertions about the ActionResult...
                 var viewResult = (ViewResult) result.ActionExecutedContext.Result;
@@ -34,9 +28,10 @@ namespace MyMvcApplication.Tests
         [Test]
         public void WorkWithCookiesAndSession()
         {
-            appHost.SimulateBrowsingSession(browsingSession => {
+            AppHost.Simulate().BrowsingSession(browsingSession =>
+            {
                 string url = "home/DoStuffWithSessionAndCookies";
-                browsingSession.ProcessRequest(url);
+                browsingSession.Get(url);
 
                 // Can make assertions about cookies
                 Assert.AreEqual("myval", browsingSession.Cookies["mycookie"].Value);
@@ -46,9 +41,9 @@ namespace MyMvcApplication.Tests
                 Assert.AreEqual(1, browsingSession.Session["myIncrementingSessionItem"]);
 
                 // Session values persist within a browsingSession
-                browsingSession.ProcessRequest(url);
+                browsingSession.Get(url);
                 Assert.AreEqual(2, browsingSession.Session["myIncrementingSessionItem"]);
-                browsingSession.ProcessRequest(url);
+                browsingSession.Get(url);
                 Assert.AreEqual(3, browsingSession.Session["myIncrementingSessionItem"]);
             });
         }
@@ -58,28 +53,29 @@ namespace MyMvcApplication.Tests
         {
             string securedActionUrl = "/home/SecretAction";
 
-            appHost.SimulateBrowsingSession(browsingSession => {
+            AppHost.Simulate().BrowsingSession(browsingSession =>
+            {
                 // First try to request a secured page without being logged in                
-                RequestResult initialRequestResult = browsingSession.ProcessRequest(securedActionUrl);
+                RequestResult initialRequestResult = browsingSession.Get(securedActionUrl);
                 string loginRedirectUrl = initialRequestResult.Response.RedirectLocation;
                 Assert.IsTrue(loginRedirectUrl.StartsWith("/Account/LogOn"), "Didn't redirect to logon page");
 
                 // Now follow redirection to logon page
-                string loginFormResponseText = browsingSession.ProcessRequest(loginRedirectUrl).ResponseText;
+                string loginFormResponseText = browsingSession.Get(loginRedirectUrl).ResponseText;
                 string suppliedAntiForgeryToken = MvcUtils.ExtractAntiForgeryToken(loginFormResponseText);
 
                 // Now post the login form, including the verification token
-                RequestResult loginResult = browsingSession.ProcessRequest(loginRedirectUrl, HttpVerbs.Post, new NameValueCollection
-                {
-                    { "username", "steve" },
-                    { "password", "secret" },
-                    { "__RequestVerificationToken", suppliedAntiForgeryToken }
-                });
+                RequestResult loginResult = browsingSession.Post(loginRedirectUrl, new
+                                                                                       {
+                                                                                           UserName = "steve",
+                                                                                           Password = "secret",
+                                                                                           __RequestVerificationToken = suppliedAntiForgeryToken
+                                                                                       });
                 string afterLoginRedirectUrl = loginResult.Response.RedirectLocation;
                 Assert.AreEqual(securedActionUrl, afterLoginRedirectUrl, "Didn't redirect back to SecretAction");
 
                 // Check that we can now follow the redirection back to the protected action, and are let in
-                RequestResult afterLoginResult = browsingSession.ProcessRequest(securedActionUrl);
+                RequestResult afterLoginResult = browsingSession.Get(securedActionUrl);
                 Assert.AreEqual("Hello, you're logged in as steve", afterLoginResult.ResponseText);
             });
         }
