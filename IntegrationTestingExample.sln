@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyMvcApplication", "MyMvcApplication\MyMvcApplication.csproj", "{DA471BE6-C786-4D16-A390-3111F9E86B66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyMvcApplication.Tests", "MyMvcApplication.Tests\MyMvcApplication.Tests.csproj", "{337FEBC1-F001-444B-BF72-A4380F5EA658}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcIntegrationTestFramework", "MvcIntegrationTestFramework\MvcIntegrationTestFramework.csproj", "{4036AFF9-698B-463D-BE26-05D2CE3E2ABD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DA471BE6-C786-4D16-A390-3111F9E86B66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA471BE6-C786-4D16-A390-3111F9E86B66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA471BE6-C786-4D16-A390-3111F9E86B66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA471BE6-C786-4D16-A390-3111F9E86B66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{337FEBC1-F001-444B-BF72-A4380F5EA658}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{337FEBC1-F001-444B-BF72-A4380F5EA658}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{337FEBC1-F001-444B-BF72-A4380F5EA658}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{337FEBC1-F001-444B-BF72-A4380F5EA658}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4036AFF9-698B-463D-BE26-05D2CE3E2ABD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4036AFF9-698B-463D-BE26-05D2CE3E2ABD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4036AFF9-698B-463D-BE26-05D2CE3E2ABD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4036AFF9-698B-463D-BE26-05D2CE3E2ABD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
