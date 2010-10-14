@@ -35,7 +35,7 @@ namespace MvcIntegrationTestFramework.Hosting
             });
         }
 
-        public void BrowsingSession(Action<BrowsingSession> testScript)
+        public void Start(Action<BrowsingSession> testScript)
         {
             var serializableDelegate = new SerializableDelegate<Action<BrowsingSession>>(testScript);
             _appDomainProxy.RunBrowsingSessionInAppDomain(serializableDelegate);
@@ -107,39 +107,14 @@ namespace MvcIntegrationTestFramework.Hosting
         /// <summary>
         /// Creates an instance of the AppHost so it can be used to simulate a browsing session.
         /// </summary>
-        /// <param name="pathToYourWebProject">
-        /// The path to your web project. This is optional if you don't
-        /// specify we try to guess that it is in the first directory like
-        /// ../../../*/web.config
-        /// </param>
         /// <returns></returns>
-        public static AppHost Simulate(string pathToYourWebProject = null)
+        public static AppHost Simulate(string mvcProjectName)
         {
-            if (pathToYourWebProject == null)
-            {
-                var guessDirectory = new DirectoryInfo(
+            var pathToMvcProject = new DirectoryInfo(
                                         Path.GetFullPath(
-                                            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..")));
+                                            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", mvcProjectName)));
 
-                var projectDirs = guessDirectory.GetDirectories();
-                foreach (var pd in projectDirs)
-                {
-                    if (pd.GetFiles("web.config").Length == 1)
-                    {
-                        pathToYourWebProject = pd.FullName;
-                        continue;
-                    }
-                }
-            }
-
-            var ourDll = Path.Combine(pathToYourWebProject, "bin", "MvcIntegrationTestFramework.dll");
-            if (!File.Exists(ourDll))
-            {
-                File.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MvcIntegrationTestFramework.dll"), ourDll);
-            }
-
-            //return new AppHost(pathToYourWebProject, "/__test");
-            return new AppHost(pathToYourWebProject);
+            return new AppHost(pathToMvcProject.ToString());
         }
     }
 }
