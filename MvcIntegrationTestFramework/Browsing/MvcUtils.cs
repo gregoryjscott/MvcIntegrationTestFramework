@@ -35,7 +35,7 @@ namespace MvcIntegrationTestFramework.Browsing
             const string Pattern =
                 @"\<input name=""__RequestVerificationToken"" type=""hidden"" value=""([^""]+)"" \/\>";
 
-            var match = Regex.Match(Pattern, htmlResponseText);
+            var match = Regex.Match(htmlResponseText, Pattern);
             return match.Success ? match.Groups[1].Captures[0].Value : null;
         }
     }

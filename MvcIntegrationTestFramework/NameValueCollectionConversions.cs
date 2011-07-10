@@ -11,6 +11,7 @@ namespace MvcIntegrationTestFramework
 {
     using System;
     using System.Collections.Specialized;
+    using System.Linq;
     using System.Web.Routing;
 
     /// <summary>
@@ -35,7 +36,7 @@ namespace MvcIntegrationTestFramework
             var nvc = new NameValueCollection();
             var dict = new RouteValueDictionary(valueSource);
 
-            foreach (var kvp in dict)
+            foreach (var kvp in dict.Where(kvp => kvp.Value != null))
             {
                 if (kvp.Value.GetType().Name.Contains("Anonymous"))
                 {
