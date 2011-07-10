@@ -64,6 +64,8 @@ namespace MyMvcApplication.Tests
                 string loginFormResponseText = browsingSession.Get(loginRedirectUrl).ResponseText;
                 string suppliedAntiForgeryToken = MvcUtils.ExtractAntiForgeryToken(loginFormResponseText);
 
+                Assert.IsNotNull(suppliedAntiForgeryToken, "The anti forgery token could not be extracted.");
+
                 // Now post the login form, including the verification token
                 RequestResult loginResult = browsingSession.Post(loginRedirectUrl, new
                                                                                        {
