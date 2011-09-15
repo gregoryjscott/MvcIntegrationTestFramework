@@ -20,7 +20,18 @@ namespace MvcIntegrationTestFramework.Browsing
 
         public RequestResult Get(string url)
         {
-            return ProcessRequest(url, HttpVerbs.Get, new NameValueCollection());
+            return this.Get(url, "");
+        }
+
+        public RequestResult Get(string url, string acceptHeader)
+        {
+            NameValueCollection headers = new NameValueCollection();
+
+            if (!String.IsNullOrEmpty(acceptHeader))
+            {
+                headers.Add("Accept", acceptHeader);
+            }
+            return ProcessRequest(url, HttpVerbs.Get, new NameValueCollection(), headers);
         }
 
         /// <summary>
@@ -45,8 +56,20 @@ namespace MvcIntegrationTestFramework.Browsing
         /// </example>
         public RequestResult Post(string url, object formData)
         {
+            return this.Post(url, formData, "");
+        }
+
+        public RequestResult Post(string url, object formData, string acceptHeader)
+        {
+            NameValueCollection headers = new NameValueCollection();
+
+            if (!String.IsNullOrEmpty(acceptHeader))
+            {
+                headers.Add("Accept", acceptHeader);
+            }
+
             var formNameValueCollection = NameValueCollectionConversions.ConvertFromObject(formData);
-            return ProcessRequest(url, HttpVerbs.Post, formNameValueCollection);
+            return ProcessRequest(url, HttpVerbs.Post, formNameValueCollection, headers);
         }
 
         private RequestResult ProcessRequest(string url, HttpVerbs httpVerb = HttpVerbs.Get, NameValueCollection formValues = null)
