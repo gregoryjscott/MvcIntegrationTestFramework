@@ -12,7 +12,12 @@ namespace MvcIntegrationTestFramework
 
             foreach (var kvp in dict)
             {
-                if (kvp.Value.GetType().Name.Contains("Anonymous"))
+                if (kvp.Value == null)
+                {
+                    // allow for null values, otherwise an exception would be thrown
+                    nvc.Add(kvp.Key, null);
+                }
+                else if (kvp.Value.GetType().Name.Contains("Anonymous"))
                 {
                     var prefix = kvp.Key + ".";
                     foreach (var innerkvp in new RouteValueDictionary(kvp.Value))
