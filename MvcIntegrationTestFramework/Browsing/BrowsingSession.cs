@@ -72,6 +72,24 @@ namespace MvcIntegrationTestFramework.Browsing
             return ProcessRequest(url, HttpVerbs.Post, formNameValueCollection, headers);
         }
 
+        public RequestResult Delete(string url, object formData)
+        {
+            return this.Delete(url, formData, "");
+        }
+
+        public RequestResult Delete(string url, object formData, string acceptHeader)
+        {
+            NameValueCollection headers = new NameValueCollection();
+
+            if (!String.IsNullOrEmpty(acceptHeader))
+            {
+                headers.Add("Accept", acceptHeader);
+            }
+
+            var formNameValueCollection = NameValueCollectionConversions.ConvertFromObject(formData);
+            return ProcessRequest(url, HttpVerbs.Delete, formNameValueCollection, headers);
+        }
+
         private RequestResult ProcessRequest(string url, HttpVerbs httpVerb = HttpVerbs.Get, NameValueCollection formValues = null)
         {
             return ProcessRequest(url, httpVerb, formValues, null);
