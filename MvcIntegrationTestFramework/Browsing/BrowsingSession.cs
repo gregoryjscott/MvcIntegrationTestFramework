@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Specialized;
 using System.IO;
 using System.Web;
@@ -25,13 +26,12 @@ namespace MvcIntegrationTestFramework.Browsing
 
         public RequestResult Get(string url, string acceptHeader)
         {
-            NameValueCollection headers = new NameValueCollection();
+            return this.Get(url, acceptHeader, "", "");
+        }
 
-            if (!String.IsNullOrEmpty(acceptHeader))
-            {
-                headers.Add("Accept", acceptHeader);
-            }
-            return ProcessRequest(url, HttpVerbs.Get, new NameValueCollection(), headers);
+        public RequestResult Get(string url, string acceptHeader, string authorizeUsername, string authorizePassword)
+        {
+            return ProcessRequest(url, HttpVerbs.Get, new NameValueCollection(), acceptHeader, authorizeUsername, authorizePassword);
         }
 
         /// <summary>
@@ -61,57 +61,70 @@ namespace MvcIntegrationTestFramework.Browsing
 
         public RequestResult Post(string url, object formData, string acceptHeader)
         {
-            NameValueCollection headers = new NameValueCollection();
+            return this.Post(url, formData, acceptHeader, "", "");
+        }
 
+        public RequestResult Post(string url, object formData, string acceptHeader, string authorizeUsername, string authorizePassword)
+        {
+            return ProcessRequest(url, HttpVerbs.Post, formData, acceptHeader, authorizeUsername, authorizePassword);
+        }
+
+        public RequestResult Delete(string url)
+        {
+            return this.Delete(url, "");
+        }
+
+        public RequestResult Delete(string url, string acceptHeader)
+        {
+            return this.Delete(url, acceptHeader, "", "");
+        }
+
+        public RequestResult Delete(string url, string acceptHeader, string authorizeUsername, string authorizePassword)
+        {
+            return ProcessRequest(url, HttpVerbs.Delete, new NameValueCollection(), acceptHeader, authorizeUsername, authorizePassword);
+        }
+
+        private RequestResult ProcessRequest(string url, HttpVerbs httpVerb, object formData, string acceptHeader, string authorizeUsername, string authorizePassword)
+        {
+
+            NameValueCollection headers = new NameValueCollection();
             if (!String.IsNullOrEmpty(acceptHeader))
             {
                 headers.Add("Accept", acceptHeader);
+                // -> http://en.wikipedia.org/wiki/List_of_HTTP_header_fields
             }
-
-            var formNameValueCollection = NameValueCollectionConversions.ConvertFromObject(formData);
-            return ProcessRequest(url, HttpVerbs.Post, formNameValueCollection, headers);
-        }
-
-        public RequestResult Delete(string url, object formData)
-        {
-            return this.Delete(url, formData, "");
-        }
-
-        public RequestResult Delete(string url, object formData, string acceptHeader)
-        {
-            NameValueCollection headers = new NameValueCollection();
-
-            if (!String.IsNullOrEmpty(acceptHeader))
+            if (!String.IsNullOrEmpty(authorizeUsername))
             {
-                headers.Add("Accept", acceptHeader);
+                headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorizeUsername + ":" + authorizePassword)));
+                // -> http://en.wikipedia.org/wiki/Basic_access_authentication
             }
 
             var formNameValueCollection = NameValueCollectionConversions.ConvertFromObject(formData);
-            return ProcessRequest(url, HttpVerbs.Delete, formNameValueCollection, headers);
-        }
+            return ProcessRequest(url, httpVerb, formNameValueCollection, headers);
 
-        private RequestResult ProcessRequest(string url, HttpVerbs httpVerb = HttpVerbs.Get, NameValueCollection formValues = null)
-        {
-            return ProcessRequest(url, httpVerb, formValues, null);
         }
 
         private RequestResult ProcessRequest(string url, HttpVerbs httpVerb, NameValueCollection formValues, NameValueCollection headers)
         {
-            if (url == null) throw new ArgumentNullException("url");
+            if (url == null)
+            {
+                throw new ArgumentNullException("url");
+            }
 
             // Fix up URLs that incorrectly start with / or ~/
             if (url.StartsWith("~/"))
                 url = url.Substring(2);
-            else if(url.StartsWith("/"))
+            else if (url.StartsWith("/"))
                 url = url.Substring(1);
 
             // Parse out the querystring if provided
             string query = "";
             int querySeparatorIndex = url.IndexOf("?");
-            if (querySeparatorIndex >= 0) {
+            if (querySeparatorIndex >= 0)
+            {
                 query = url.Substring(querySeparatorIndex + 1);
                 url = url.Substring(0, querySeparatorIndex);
-            }                
+            }
 
             // Perform the request
             LastRequestData.Reset();
@@ -134,18 +147,19 @@ namespace MvcIntegrationTestFramework.Browsing
 
         private void AddAnyNewCookiesToCookieCollection()
         {
-            if(LastRequestData.Response == null)
+            if (LastRequestData.Response == null)
                 return;
 
             HttpCookieCollection lastResponseCookies = LastRequestData.Response.Cookies;
-            if(lastResponseCookies == null)
+            if (lastResponseCookies == null)
                 return;
 
-            foreach (string cookieName in lastResponseCookies) {
+            foreach (string cookieName in lastResponseCookies)
+            {
                 HttpCookie cookie = lastResponseCookies[cookieName];
                 if (Cookies[cookieName] != null)
                     Cookies.Remove(cookieName);
-                if((cookie.Expires == default(DateTime)) || (cookie.Expires > DateTime.Now))
+                if ((cookie.Expires == default(DateTime)) || (cookie.Expires > DateTime.Now))
                     Cookies.Add(cookie);
             }
         }

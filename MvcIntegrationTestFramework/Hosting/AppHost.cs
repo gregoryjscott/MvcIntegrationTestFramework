@@ -41,6 +41,7 @@ namespace MvcIntegrationTestFramework.Hosting
             _appDomainProxy.RunBrowsingSessionInAppDomain(serializableDelegate);
         }
 
+
         #region Initializing app & interceptors
         private static void InitializeApplication()
         {
